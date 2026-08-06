@@ -1,0 +1,9 @@
+matplotlib
+numpy
+ollama
+opencv_python
+Shapely
+torch
+transforms3d
+ultralytics
+igraph
