@@ -1,0 +1,1 @@
+from QSR.QSR import QSRPipeline

@@ -1,0 +1,62 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+*.egg-info/
+.eggs/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Webots ---
+# Compiled controller binaries
+*.o
+*.obj
+*.exe
+*.dll
+*.dylib
+*.class
+
+# Webots temp/log/cache files
+*.wbproj.lock
+*~
+*.tmp
+*.log
+
+# Webots generated world backups
+*.wbt.bak
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- IDE / editor ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Data / large files (uncomment if relevant) ---
+# *.mp4
+# *.avi
+# *.bag
+# *.csv
+# *.h5
+
+# --- Environment / secrets ---
+.env
+*.key
+
+# --- Misc ---
+*.bak
+*.orig
+*.pt
