@@ -3,7 +3,8 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
-sys.path.append(os.path.expanduser("~/Dissertation/src"))
+sys.path.append(os.path.expanduser("~/PycharmProjects/dissertation/src"))
+sys.path.append(os.path.expanduser("~/PycharmProjects/dissertation/strands_qsr_lib/qsr_lib/src"))
 
 from Agent import Agent
 from Yolo_and_Conceptnet.conceptnet import get_info
