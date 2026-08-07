@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division
 import numpy as np
-from qsr_arg_relations_distance import QSR_Arg_Relations_Distance
+from qsrlib_qsrs.qsr_arg_relations_distance import QSR_Arg_Relations_Distance
 from random import uniform
 
 
