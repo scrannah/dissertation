@@ -176,12 +176,11 @@ class RobotAgentGroundTruth(Agent):
             sentence += "."
 
             concept_info = self.get_object_context(r["object"])
+            sentence += f" (evidence strength: {object_evidence_strength[r['object']]})"
             if concept_info.get("used for"):
-                sentence += (f" ({r['object'].capitalize()} is typically used for {concept_info['used for'][0]} "
-                             f"and has a computed evidence strength of {object_evidence_strength[r['object']]}.)")
+                sentence += f" {r['object'].capitalize()} is typically used for {concept_info['used for'][0]}."
             elif concept_info.get("is a"):
-                sentence += (f" ({r['object'].capitalize()} is a type of {concept_info['is a'][0]} "
-                             f"and has a computed evidence strength of {object_evidence_strength[r['object']]}.)")
+                sentence += f" {r['object'].capitalize()} is a type of {concept_info['is a'][0]}."
 
             sentences.append(sentence)
 
@@ -235,7 +234,7 @@ Answer:"""
         return likelihoods
 
     def update_belief(self, likelihoods, debug=True):
-
+        # TODO bayesian needs to be stopped from early assumptions, allow for n observations before goal assumption
         if likelihoods is None:
             return None # escape
 
@@ -272,7 +271,7 @@ Answer:"""
         while self.step():
             step_count += 1
 
-            if step_count % 30 == 0 and not goal_locked:
+            if step_count % 150 == 0 and not goal_locked:
                 observations = self.perceive_ground_truth(debug=True)
                 if observations and observations.get("relations"):
                     object_evidence_strengths = self.compute_evidence_strength(observations.get("relations"))
