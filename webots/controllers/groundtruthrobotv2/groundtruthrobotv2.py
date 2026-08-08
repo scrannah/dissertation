@@ -1,6 +1,7 @@
 # for ground truth world testing, llm and bayesian
 import sys
 import os
+import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
 sys.path.append(os.path.expanduser("~/PycharmProjects/dissertation/src"))
@@ -14,7 +15,7 @@ from qsrlib.qsrlib import QSRlib, QSRlib_Request_Message
 from qsrlib_io.world_trace import World_Trace, Object_State
 
 TRACKED_OBJECTS = ["meal", "biscuits", "hobs", "plate", "sink", "glass", "bottle"]
-CANDIDATE_GOALS = ["breakfast", "lunch", "drink", "unknown"]
+CANDIDATE_GOALS = ["breakfast", "lunch", "drink"]
 
 QDC_PHRASES = {
     "touch": "is touching",
@@ -71,7 +72,7 @@ class RobotAgentGroundTruth(Agent):
 
         self.conceptnet_cache = {}
 
-        self.belief = {goal: 1.0 / len(CANDIDATE_GOALS) for goal in CANDIDATE_GOALS} # all goals as lilely as each  other at start
+        self.belief = {goal: 1.0 / len(CANDIDATE_GOALS) for goal in CANDIDATE_GOALS} # all goals as likely as each  other at start
         self.confidence_threshold = 0.75
 
         self.timestep_counter = 0
@@ -161,7 +162,7 @@ class RobotAgentGroundTruth(Agent):
             self.conceptnet_cache[object_name] = get_info(object_name)
         return self.conceptnet_cache[object_name]
 
-    def relations_to_text(self, relations):
+    def relations_to_text(self, relations, object_evidence_strength):
         sentences = []
         for r in relations:
             if r["qdc"] == "ignore": # if object irrelevant do not build sentence
@@ -176,9 +177,11 @@ class RobotAgentGroundTruth(Agent):
 
             concept_info = self.get_object_context(r["object"])
             if concept_info.get("used for"):
-                sentence += f" ({r['object'].capitalize()} is typically used for {concept_info['used for'][0]}.)"
+                sentence += (f" ({r['object'].capitalize()} is typically used for {concept_info['used for'][0]} "
+                             f"and has a computed evidence strength of {object_evidence_strength[r['object']]}.)")
             elif concept_info.get("is a"):
-                sentence += f" ({r['object'].capitalize()} is a type of {concept_info['is a'][0]}.)"
+                sentence += (f" ({r['object'].capitalize()} is a type of {concept_info['is a'][0]} "
+                             f"and has a computed evidence strength of {object_evidence_strength[r['object']]}.)")
 
             sentences.append(sentence)
 
@@ -187,7 +190,7 @@ class RobotAgentGroundTruth(Agent):
         return " ".join(sentences) # build sentence
 
     def compute_evidence_strength(self, relations):
-        max_strength = 0.2 # baseline strength to start with before loop
+        object_evidence_strengths = {}
         for r in relations:
             if r["qdc"] == "ignore":
                 continue
@@ -198,18 +201,17 @@ class RobotAgentGroundTruth(Agent):
                 strength += 0.2
             if r["holding"]:
                 strength += 0.4
-            max_strength = max(max_strength, strength) # highest strength so far calculated
-        return min(max_strength, 1.0) # TODO this is a global variable it sets all object evidence in prompt to highest
-                                      # e.g hob 0.8 sink 0.4 all objects within prompt get set to 0.8 skewing importance
+            object_evidence_strengths[r["object"]] = strength # append strengths per obejct to dict
+        return object_evidence_strengths
 
-    def generate_hypothesis(self, observations, debug=True):
+    def generate_hypothesis(self, observations, object_evidence_strengths, debug=True):
         relations = observations.get("relations", []) # grab your qsrs
-        scene_description = self.relations_to_text(relations) # send them to sentences
+        scene_description = self.relations_to_text(relations, object_evidence_strengths) # send them to sentences
 
         prompt = f"""You are observing a person in a kitchen. Based on the following
-observation, what is the person most likely doing? Answer with a short
-phrase only (e.g. "making breakfast", "cooking lunch", "getting a drink",
-"unclear"). Do not explain your reasoning, just give the phrase.
+observations, respond with a likelihood between 0 and 1 for each the candidate goals: {', '.join(CANDIDATE_GOALS)} respond
+in a JSON format {{"breakfast": 0.0, "lunch": 0.0, "drink": 0.0}} only do not say anything else.
+                                                    
 
 Observation: {scene_description}
 
@@ -219,31 +221,32 @@ Answer:"""
             print("[LLM PROMPT]")
             print(prompt)
 
-        hypothesis = call_llm(prompt)
-        hypothesis = hypothesis.split("\n")[0].strip()
+        raw_likelihoods = call_llm(prompt) # string
+        try:
+            likelihoods = json.loads(raw_likelihoods) # to json
+        except json.decoder.JSONDecodeError:
+            print("LLM Failure")
+            return None
+
 
         if debug:
-            print(f"[LLM HYPOTHESIS] {hypothesis}")
+            print(f"[LLM likelihoods] {likelihoods}")
 
-        return hypothesis
+        return likelihoods
 
-    def update_belief(self, hypothesis, evidence_strength=0.6, debug=True):
-        matched_goal = "unknown"
-        hypothesis_lower = hypothesis.lower()
-        if "breakfast" in hypothesis_lower:
-            matched_goal = "breakfast"
-        elif "lunch" in hypothesis_lower or "cook" in hypothesis_lower:
-            matched_goal = "lunch"
-        elif "drink" in hypothesis_lower:
-            matched_goal = "drink" # test only works if prompt returns string
+    def update_belief(self, likelihoods, debug=True):
+
+        if likelihoods is None:
+            return None # escape
 
         for goal in self.belief:
-            if goal == matched_goal:
-                self.belief[goal] = self.belief[goal] + evidence_strength * (1 - self.belief[goal])
-            else:
-                self.belief[goal] = self.belief[goal] * (1 - evidence_strength * 0.3)
-                # TODO EVIDENCE STRENGTH DOES NOT WORK HERE AS INTENDED
+            self.belief[goal] = self.belief[goal] * likelihoods.get(goal, 1.0) # default to 1 keeps number as is
+
         total = sum(self.belief.values())
+
+        if total == 0:
+            return None # escape if all values 0.0, breaks when divising for normalising
+
         for goal in self.belief:
             self.belief[goal] /= total
 
@@ -253,7 +256,7 @@ Answer:"""
         best_goal = max(self.belief, key=self.belief.get) # key makes it so max compares numbers not goals
         best_confidence = self.belief[best_goal]
 
-        if best_goal != "unknown" and best_confidence >= self.confidence_threshold:
+        if best_confidence >= self.confidence_threshold:
             return best_goal, best_confidence
 
         return None
@@ -268,9 +271,9 @@ Answer:"""
             if step_count % 30 == 0 and not goal_locked:
                 observations = self.perceive_ground_truth(debug=True)
                 if observations and observations.get("relations"):
-                    hypothesis = self.generate_hypothesis(observations, debug=True)
-                    evidence_strength = self.compute_evidence_strength(observations["relations"])
-                    result = self.update_belief(hypothesis, evidence_strength=evidence_strength, debug=True)
+                    object_evidence_strengths = self.compute_evidence_strength(observations.get("relations"))
+                    likelihoods = self.generate_hypothesis(observations, object_evidence_strengths, debug=True)
+                    result = self.update_belief(likelihoods, debug=True)
                     if result:
                         goal, confidence = result
                         print(f"Suggested goal: {goal} (confidence={confidence:.2f}) ")
