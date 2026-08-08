@@ -209,8 +209,8 @@ class RobotAgentGroundTruth(Agent):
         scene_description = self.relations_to_text(relations, object_evidence_strengths) # send them to sentences
 
         prompt = f"""You are observing a person in a kitchen. Based on the following
-observations, respond with a likelihood between 0 and 1 for each the candidate goals: {', '.join(CANDIDATE_GOALS)} respond
-in a JSON format {{"breakfast": 0.0, "lunch": 0.0, "drink": 0.0}} only do not say anything else.
+observations, respond with a likelihood between 0 and 1 for each the candidate goals: {', '.join(CANDIDATE_GOALS + ["unknown"])} respond
+in a JSON format {{"breakfast": 0.0, "lunch": 0.0, "drink": 0.0, "unknown": 0.0}} only do not say anything else.
                                                     
 
 Observation: {scene_description}
@@ -239,8 +239,12 @@ Answer:"""
         if likelihoods is None:
             return None # escape
 
+        if likelihoods.get("unknown", 0.0) >= 0.5:
+            return None # skip bayesian updating if unknown
+
         for goal in self.belief:
-            self.belief[goal] = self.belief[goal] * likelihoods.get(goal, 1.0) # default to 1 keeps number as is
+            self.belief[goal] = self.belief[goal] * max(likelihoods.get(goal, 1.0), 0.05)
+            # default to 1 keeps bayesian goal update at same number, 0.05 floors it
 
         total = sum(self.belief.values())
 
