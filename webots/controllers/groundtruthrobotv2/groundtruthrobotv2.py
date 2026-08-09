@@ -271,7 +271,7 @@ Answer:"""
         while self.step():
             step_count += 1
 
-            if step_count % 150 == 0 and not goal_locked:
+            if step_count % 150 == 0 and not goal_locked: # fine tune this its not catching actions
                 observations = self.perceive_ground_truth(debug=True)
                 if observations and observations.get("relations"):
                     object_evidence_strengths = self.compute_evidence_strength(observations.get("relations"))
@@ -281,6 +281,12 @@ Answer:"""
                         goal, confidence = result
                         print(f"Suggested goal: {goal} (confidence={confidence:.2f}) ")
                         goal_locked = True # maybe dont lock when only one goal is certain?
+                        # or have to wait until seen enough to decide
+                        # assumes way too early
+                        # TODO ADD MULIPLE LAYERED LLM ONE FOR ACTION ONE FOR GOAL
+                        # TODO PASS SLIDING WINDOWS QSR TO ACTION, PASS SLIDING WINDOW ACTION TO GOAL LIKELIHOOD
+                        # CONSIDER ANOTHER BAYESIAN LAYER (idk where youre getting that likelihood from tho lol)
+
 
 
 def main():
