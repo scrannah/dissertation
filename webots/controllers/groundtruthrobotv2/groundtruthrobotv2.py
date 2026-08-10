@@ -15,7 +15,7 @@ from qsrlib.qsrlib import QSRlib, QSRlib_Request_Message
 from qsrlib_io.world_trace import World_Trace, Object_State
 
 TRACKED_OBJECTS = ["meal", "biscuits", "hobs", "plate", "sink", "glass", "bottle"]
-CANDIDATE_GOALS = ["breakfast", "lunch", "drink"]
+candidate_goals = ["breakfast", "lunch", "drink"]
 
 QDC_PHRASES = {
     "touch": "is touching",
@@ -72,7 +72,16 @@ class RobotAgentGroundTruth(Agent):
 
         self.conceptnet_cache = {}
 
-        self.belief = {goal: 1.0 / len(CANDIDATE_GOALS) for goal in CANDIDATE_GOALS} # all goals as likely as each  other at start
+        self.min_actions_for_goal_reasoning = 5
+        self.lock_streak = 5
+        self.consecutive_goal = None
+        self.consecutive_count = 0
+        self.action_history = []
+        self.action_window = 5   # only feed the last 5 actions into stage 2, not the whole accumulated list
+        self.goal_guess_history = []
+        self.goal_window = 5
+        self.min_guesses_for_likelihood = 3 # dont trust the frequency count until we have enough guesses banked
+        self.belief = {goal: 1.0 / len(candidate_goals) for goal in candidate_goals} # all goals as likely as each  other at start
         self.confidence_threshold = 0.75
 
         self.timestep_counter = 0
@@ -203,16 +212,129 @@ class RobotAgentGroundTruth(Agent):
             object_evidence_strengths[r["object"]] = strength # append strengths per obejct to dict
         return object_evidence_strengths
 
-    def generate_hypothesis(self, observations, object_evidence_strengths, debug=True):
-        relations = observations.get("relations", []) # grab your qsrs
-        scene_description = self.relations_to_text(relations, object_evidence_strengths) # send them to sentences
+    def interpret_action(self, relations, object_evidence_strengths, debug=True):
+        scene_description = self.relations_to_text(relations, object_evidence_strengths)
 
-        prompt = f"""You are observing a person in a kitchen. Based on the following
-observations, respond with a likelihood between 0 and 1 for each the candidate goals: {', '.join(CANDIDATE_GOALS + ["unknown"])} respond
-in a JSON format {{"breakfast": 0.0, "lunch": 0.0, "drink": 0.0, "unknown": 0.0}} only do not say anything else.
-                                                    
+        prompt = f"""You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Taking the bottle to the glass.
+
+Example 2:
+Observation: The human is touching the meal, approaching it, and is
+currently HOLDING it. The human is a medium distance from the hobs,
+approaching it.
+Action: Carrying the meal to the hobs.
+
+Example 3:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 4:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 5:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+Example 6:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Now here is the real situation.
 
 Observation: {scene_description}
+
+Action:"""
+
+        if debug:
+            print("[STAGE 1 PROMPT]")
+            print(prompt)
+
+        action = call_llm(prompt)
+        action = action.strip()
+
+        if debug:
+            print(f"[STAGE 1 ACTION] {action}")
+
+        return action
+
+    def generate_hypothesis(self, action_history, debug=True):
+        # no longer asks for JSON likelihoods, asks for a single vote
+        # llm own likelihood value not grounded anything
+        # coll;ect likelihood from banked votes
+        history_text = "\n".join(f"- {a}" for a in action_history)
+
+        prompt = f"""You are one vote in a Bayesian intention-recognition system. Your
+single-word answer is combined with several other votes over time to build
+confidence in a goal, repeated votes for the same goal push confidence up
+quickly, so voting confidently on weak or repetitive evidence causes the
+system to commit to a goal too early and too often. Because of this, you
+should only vote for breakfast, lunch, or drink when the evidence genuinely
+discriminates between them, being unsure is okay. Based on the following recent actions, which ONE of these is most
+likely the person's goal: {', '.join(candidate_goals)}?
+
+If the evidence does not clearly point to one goal, respond with "unsure"
+instead. Respond with EXACTLY ONE WORD, one of {', '.join(candidate_goals)},
+or "unsure" and nothing else.
+
+Example 1:
+Actions:
+- The person is holding the bottle and moving toward the glass.
+- The person is holding the glass, stationary near the sink.
+Answer: drink
+
+Example 2:
+Actions:
+- The person is holding the meal and moving toward the hobs.
+- The person is holding the plate while standing at the hobs.
+Answer: lunch
+
+Example 3:
+Actions:
+- The person is holding the biscuits and moving away from the sink.
+- The person is holding the meal and moving toward the plate.
+Answer: breakfast
+
+Example 4:
+Actions:
+- The person is not holding anything and is approaching the plate.
+- The person is not holding anything and is approaching the glass.
+Answer: unsure
+
+Example 5:
+Actions:
+- The person is holding the meal and moving toward the hobs.
+- The person is touching the hobs while holding the meal.
+Answer: lunch
+
+Example 6:
+Actions:
+- The person is not holding anything and is not moving toward any object.
+- The person is not holding anything and is approaching the biscuits.
+Answer: unsure
+
+
+Now here is the real situation.
+
+Recent actions observed, oldest first:
+{history_text}
 
 Answer:"""
 
@@ -220,26 +342,25 @@ Answer:"""
             print("[LLM PROMPT]")
             print(prompt)
 
-        raw_likelihoods = call_llm(prompt) # string
-        try:
-            likelihoods = json.loads(raw_likelihoods) # to json
-        except json.decoder.JSONDecodeError:
-            print("LLM Failure")
-            return None
-
+        raw_guess = call_llm(prompt).strip().lower()
 
         if debug:
-            print(f"[LLM likelihoods] {likelihoods}")
+            print(f"[LLM GUESS] {raw_guess}")
 
-        return likelihoods
+        if raw_guess not in candidate_goals: # unusable output, skip this timestep
+            return None
+
+        return raw_guess
+
+    def compute_likelihoods_from_guesses(self): # try making bayesian from past guesses
+        recent = self.goal_guess_history[-self.goal_window:] # this method only works with fixed goal list
+        total = len(recent)
+        return {goal: recent.count(goal) / total for goal in candidate_goals}
 
     def update_belief(self, likelihoods, debug=True):
-        # TODO bayesian needs to be stopped from early assumptions, allow for n observations before goal assumption
         if likelihoods is None:
             return None # escape
 
-        if likelihoods.get("unknown", 0.0) >= 0.5:
-            return None # skip bayesian updating if unknown
 
         for goal in self.belief:
             self.belief[goal] = self.belief[goal] * max(likelihoods.get(goal, 1.0), 0.05)
@@ -260,7 +381,14 @@ Answer:"""
         best_confidence = self.belief[best_goal]
 
         if best_confidence >= self.confidence_threshold:
-            return best_goal, best_confidence
+            if best_goal == self.consecutive_goal:
+                self.consecutive_count += 1
+            else:
+                self.consecutive_goal = best_goal
+                self.consecutive_count = 1
+
+            if self.consecutive_count >= self.lock_streak:
+                return best_goal, best_confidence
 
         return None
 
@@ -271,26 +399,27 @@ Answer:"""
         while self.step():
             step_count += 1
 
-            if step_count % 150 == 0 and not goal_locked: # fine tune this its not catching actions
+            if step_count % 90 == 0 and not goal_locked: # fine tune  for more/less movements caught
                 observations = self.perceive_ground_truth(debug=True)
                 if observations and observations.get("relations"):
                     object_evidence_strengths = self.compute_evidence_strength(observations.get("relations"))
-                    likelihoods = self.generate_hypothesis(observations, object_evidence_strengths, debug=True)
-                    result = self.update_belief(likelihoods, debug=True)
-                    if result:
-                        goal, confidence = result
-                        print(f"Suggested goal: {goal} (confidence={confidence:.2f}) ")
-                        goal_locked = True # maybe dont lock when only one goal is certain?
-                        # or have to wait until seen enough to decide
-                        # assumes way too early
-                        # TODO ADD MULIPLE LAYERED LLM ONE FOR ACTION ONE FOR GOAL
-                        # TODO PASS SLIDING WINDOWS QSR TO ACTION, PASS SLIDING WINDOW ACTION TO GOAL LIKELIHOOD
-                        # bayesian based on probablilty of last action
-                        # try training llm on some examples
-                        # CONSIDER ANOTHER BAYESIAN LAYER (idk where youre getting that likelihood from tho lol)
-
-
-
+                    action = self.interpret_action(observations.get("relations"), object_evidence_strengths)
+                    if not self.action_history or self.action_history[-1] != action:
+                        self.action_history.append(action)
+                        if len(self.action_history) > self.action_window:
+                            self.action_history.pop(0)
+                    if len(self.action_history) >= self.min_actions_for_goal_reasoning:
+                        guess = self.generate_hypothesis(self.action_history, debug=True)
+                        if guess is not None:
+                            self.goal_guess_history.append(guess)
+                            if len(self.goal_guess_history) >= self.min_guesses_for_likelihood: # dont trust a 1 guess frequency
+                                likelihoods = self.compute_likelihoods_from_guesses() # likelihood
+                                result = self.update_belief(likelihoods, debug=True)
+                                if result:
+                                    goal, confidence = result
+                                    print(f"Suggested goal: {goal} (confidence={confidence:.2f}) ")
+                                    goal_locked = True # maybe dont lock when only one goal is certain?
+                                    # TODO once goal locked using past observations create action plan?
 
 
 def main():
