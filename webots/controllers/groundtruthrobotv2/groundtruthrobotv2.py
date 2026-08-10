@@ -285,7 +285,11 @@ Answer:"""
                         # assumes way too early
                         # TODO ADD MULIPLE LAYERED LLM ONE FOR ACTION ONE FOR GOAL
                         # TODO PASS SLIDING WINDOWS QSR TO ACTION, PASS SLIDING WINDOW ACTION TO GOAL LIKELIHOOD
+                        # bayesian based on probablilty of last action
+                        # try training llm on some examples
                         # CONSIDER ANOTHER BAYESIAN LAYER (idk where youre getting that likelihood from tho lol)
+
+
 
 
 
