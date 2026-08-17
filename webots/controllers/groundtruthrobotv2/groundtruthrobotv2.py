@@ -2,6 +2,8 @@
 import sys
 import os
 import json
+import csv
+import time
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
 sys.path.append(os.path.expanduser("~/PycharmProjects/dissertation/src"))
@@ -85,6 +87,13 @@ class RobotAgentGroundTruth(Agent):
         self.confidence_threshold = 0.75
 
         self.timestep_counter = 0
+
+        self.run_id = f"run_{int(time.time())}"
+        os.makedirs("logs", exist_ok=True)
+        self.log_file = open(f"logs/{self.run_id}_steps.csv", "w", newline="")
+        self.logger = csv.writer(self.log_file)
+        self.logger.writerow(["timestep", "action", "vote", "belief_breakfast", "belief_lunch", "belief_drink"])
+        self.log_file.flush()
 
         print(str(self.__class__.__name__) + " has activated (ground truth mode, qsrlib).")
 
@@ -415,13 +424,23 @@ Answer:"""
                             if len(self.goal_guess_history) >= self.min_guesses_for_likelihood: # dont trust a 1 guess frequency
                                 likelihoods = self.compute_likelihoods_from_guesses() # likelihood
                                 result = self.update_belief(likelihoods, debug=True)
+
+                                self.logger.writerow([
+                                    self.timestep_counter, action, guess,
+                                    round(self.belief["breakfast"], 3),
+                                    round(self.belief["lunch"], 3),
+                                    round(self.belief["drink"], 3)
+                                ])
+
                                 if result:
                                     goal, confidence = result
                                     print(f"Suggested goal: {goal} (confidence={confidence:.2f}) ")
                                     goal_locked = True # maybe dont lock when only one goal is certain?
+                                    with open("logs/summary.csv", "a", newline="") as f:
+                                        csv.writer(f).writerow([self.run_id, goal, confidence, self.timestep_counter])
                                     # TODO once goal locked using past observations create action plan?
 
-
+        self.log_file.close()
 def main():
     robot = RobotAgentGroundTruth()
     robot.main()
