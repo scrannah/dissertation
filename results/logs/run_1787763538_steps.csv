@@ -1,0 +1,12 @@
+timestep,vote,belief_breakfast,belief_lunch,belief_drink
+6,unsure,0.333,0.333,0.333
+7,lunch,0.333,0.333,0.333
+8,unsure,0.115,0.769,0.115
+9,drink,0.025,0.847,0.127
+10,drink,0.006,0.765,0.229
+11,drink,0.001,0.526,0.473
+12,drink,0.0,0.065,0.935
+13,breakfast,0.0,0.004,0.996
+14,drink,0.0,0.0,1.0
+15,drink,0.0,0.0,1.0
+16,unsure,0.0,0.0,1.0

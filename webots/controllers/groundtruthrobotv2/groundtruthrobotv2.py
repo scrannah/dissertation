@@ -17,6 +17,7 @@ from qsrlib_io.world_trace import World_Trace, Object_State
 
 candidate_goals = ["breakfast", "lunch", "drink"]
 
+
 class QSRPerception:
     def __init__(self):
         self.qdc_phrases = {
@@ -38,7 +39,7 @@ class QSRPerception:
         self.qsrlib = QSRlib()
         self.world_trace = World_Trace()
 
-        qsrs_for = [("human", ooi) for ooi in self.tracked_objects] # only care about human-object relationships
+        qsrs_for = [("human", ooi) for ooi in self.tracked_objects]  # only care about human-object relationships
         self.dynamic_args = {
             "argd": {
                 "qsrs_for": qsrs_for,
@@ -59,14 +60,14 @@ class QSRPerception:
         self.conceptnet_cache = {}
         self.timestep_counter = 0
 
-    def perceive_ground_truth(self, all_nodes, supervisor, debug=False): # debug for printing
+    def perceive_ground_truth(self, all_nodes, supervisor, debug=False):  # debug for printing
         human_node = all_nodes.get("human")
         if human_node is None:
             return None
 
         hx, hy, hz = human_node.getPosition()
 
-        held_field = human_node.getField("heldObjectReference") # gets if human is holding object
+        held_field = human_node.getField("heldObjectReference")  # gets if human is holding object
         held_id = held_field.getSFInt32() if held_field else 0
         holding_something = held_id != 0
         held_object_name = None
@@ -87,7 +88,7 @@ class QSRPerception:
             ox, oy, oz = node.getPosition()
             self.world_trace.add_object_state(Object_State(name=obj_name, timestamp=t, x=ox, y=oy))
 
-        if self.timestep_counter < 2: # only computer if we have more than 2 timesteps
+        if self.timestep_counter < 2:  # only computer if we have more than 2 timesteps
             if debug:
                 print("Waiting for timestep")
             return None
@@ -112,21 +113,22 @@ class QSRPerception:
 
         timestamps = response.qsrs.get_sorted_timestamps()
         if not timestamps:
-            return relations # in case empty list don't crash it
-        latest_t = timestamps[-1] # only want most recent timestamp
+            return relations  # in case empty list don't crash it
+        latest_t = timestamps[-1]  # only want most recent timestamp
 
-        qsrs_at_t = response.qsrs.trace[latest_t].qsrs # grabs the qsr's from right now
+        qsrs_at_t = response.qsrs.trace[latest_t].qsrs  # grabs the qsr's from right now
 
         for pair_key, qsr_obj in qsrs_at_t.items():
-            if not pair_key.startswith("human,"): # only care if human-object relationship
+            if not pair_key.startswith("human,"):  # only care if human-object relationship
                 continue
-            obj_name = pair_key.split(",")[1] # just keep object name for prompting
+            obj_name = pair_key.split(",")[1]  # just keep object name for prompting
 
             qsr_values = qsr_obj.qsr
 
-            qdc_value = qsr_values.get("argd", "ignore") # if you cant find the qsr, default
+            qdc_value = qsr_values.get("argd", "ignore")  # if you cant find the qsr, default
             qtcbs_value = qsr_values.get("qtcbs", "0")
-            qtc_value = qtcbs_value.split(",")[0] if qtcbs_value else "0" # only need first symbol for qtc, default to 0
+            qtc_value = qtcbs_value.split(",")[
+                0] if qtcbs_value else "0"  # only need first symbol for qtc, default to 0
 
             relations.append({
                 "object": obj_name,
@@ -145,7 +147,7 @@ class QSRPerception:
     def relations_to_text(self, relations, object_evidence_strength):
         sentences = []
         for r in relations:
-            if r["qdc"] == "ignore": # if object irrelevant do not build sentence
+            if r["qdc"] == "ignore":  # if object irrelevant do not build sentence
                 continue
 
             sentence = (f"The human {self.qdc_phrases.get(r['qdc'], 'has an unknown relation to')} "
@@ -165,22 +167,22 @@ class QSRPerception:
             sentences.append(sentence)
 
         if not sentences:
-            return "The human is not near any known object." # if nothing to say give the llm something instead of empty
-        return " ".join(sentences) # build sentence
+            return "The human is not near any known object."  # if nothing to say give the llm something instead of empty
+        return " ".join(sentences)  # build sentence
 
     def compute_evidence_strength(self, relations):
         object_evidence_strengths = {}
         for r in relations:
             if r["qdc"] == "ignore":
                 continue
-            strength = 0.2 # reset strength per object
+            strength = 0.2  # reset strength per object
             if r["qdc"] in ("touch", "near"):
                 strength += 0.2
             if r["qtc"] == "-":
                 strength += 0.2
             if r["holding"]:
                 strength += 0.4
-            object_evidence_strengths[r["object"]] = strength # append strengths per obejct to dict
+            object_evidence_strengths[r["object"]] = strength  # append strengths per obejct to dict
         return object_evidence_strengths
 
 
@@ -191,14 +193,14 @@ class LLMReasoner:
             response = ollama.chat(
                 model='llama3.1',
                 messages=[{'role': 'user', 'content': prompt}],
-                options={'temperature': 0} 
+                options={'temperature': 0}
             )
             return response['message']['content'].strip()
         except Exception as e:
             print(f"[LLM ERROR] {e}")
             return "unclear"
 
-    def interpret_action(self, relations, object_evidence_strengths, qsr, debug=True):
+    def interpret_action(self, relations, object_evidence_strengths, qsr, run_logger, timestep, debug=True):
         scene_description = qsr.relations_to_text(relations, object_evidence_strengths)
 
         prompt = f"""You are the perception stage in a multi-stage intention-recognition
@@ -252,19 +254,20 @@ Observation: {scene_description}
 Action:"""
 
         # if debug:
-            # print("[STAGE 1 PROMPT]")
-            # print(prompt)
+        # print("[STAGE 1 PROMPT]")
+        # print(prompt)
 
         raw_response = self.call_llm(prompt).strip()
         action = raw_response
 
+        run_logger.log_llm_output("STAGE 1", timestep, prompt, raw_response)
+
         if debug:
             print(f"[STAGE 1 ACTION] {action}")
-            
 
         return action
 
-    def generate_hypothesis(self, action_history, debug=True):
+    def generate_hypothesis(self, action_history, run_logger, timestep, debug=True):
         # no longer asks for JSON likelihoods, asks for a single vote
         # llm own likelihood value not grounded anything
         # coll;ect likelihood from banked votes
@@ -272,10 +275,7 @@ Action:"""
 
         prompt = f"""You are one vote in a Bayesian intention-recognition system. Your
         final answer is combined with several other votes over time to build
-        confidence in a goal, repeated votes for the same goal push confidence up
-        quickly, so voting confidently on weak or repetitive evidence causes the
-        system to commit to a goal too early and too often. Because of this, you
-        should only vote for breakfast, lunch, or drink when the evidence genuinely
+        confidence in a goal, you should only vote for breakfast, lunch, or drink when the evidence genuinely
         discriminates between them, being unsure is okay.
 
         For each example, briefly reason about what the recent actions suggest,
@@ -332,9 +332,9 @@ Action:"""
 
         Reasoning:"""
 
-        #if debug:
-            #print("[LLM PROMPT]")
-            #print(prompt)
+        # if debug:
+        # print("[LLM PROMPT]")
+        # print(prompt)
 
         raw_response = self.call_llm(prompt).strip().lower()
 
@@ -343,14 +343,14 @@ Action:"""
         else:
             raw_guess = raw_response  # fallback if it didn't follow the format
 
+        run_logger.log_llm_output("STAGE 2", timestep, prompt, raw_response)
+
         if debug:
             print(f"[LLM RAW RESPONSE] {raw_response}")
             print(f"[LLM GUESS] {raw_guess}")
 
-        if raw_guess not in candidate_goals:
+        if raw_guess not in candidate_goals and raw_guess != "unsure":
             return None
-
-
 
         return raw_guess
 
@@ -362,18 +362,19 @@ class BayesianGate:
         self.consecutive_count = 0
         self.goal_guess_history = []
         self.goal_window = 5
-        self.min_guesses_for_likelihood = 3 # don't trust the frequency count until we have enough guesses banked
-        self.belief = {goal: 1.0 / len(candidate_goals) for goal in candidate_goals} # all goals as likely as each  other at start
+        self.min_guesses_for_likelihood = 3  # don't trust the frequency count until we have enough guesses banked
+        self.belief = {goal: 1.0 / len(candidate_goals) for goal in
+                       candidate_goals}  # all goals as likely as each  other at start
         self.confidence_threshold = 0.75
 
-    def compute_likelihoods_from_guesses(self): # try making bayesian from past guesses
-        recent = self.goal_guess_history[-self.goal_window:] # this method only works with fixed goal list
+    def compute_likelihoods_from_guesses(self):  # try making bayesian from past guesses
+        recent = self.goal_guess_history[-self.goal_window:]  # this method only works with fixed goal list
         total = len(recent)
         return {goal: recent.count(goal) / total for goal in candidate_goals}
 
     def update_belief(self, likelihoods, debug=True):
         if likelihoods is None:
-            return None # escape
+            return None  # escape
 
         for goal in self.belief:
             self.belief[goal] = self.belief[goal] * max(likelihoods.get(goal, 1.0), 0.05)
@@ -382,14 +383,14 @@ class BayesianGate:
         total = sum(self.belief.values())
 
         if total == 0:
-            return None # escape if all values 0.0, breaks when divising for normalising
+            return None  # escape if all values 0.0, breaks when divising for normalising
         for goal in self.belief:
             self.belief[goal] /= total
 
         if debug:
             print("[BELIEF]", {g: round(p, 3) for g, p in self.belief.items()})
 
-        best_goal = max(self.belief, key=self.belief.get) # key makes it so max compares numbers not goals
+        best_goal = max(self.belief, key=self.belief.get)  # key makes it so max compares numbers not goals
         best_confidence = self.belief[best_goal]
 
         if best_confidence >= self.confidence_threshold:
@@ -408,27 +409,36 @@ class BayesianGate:
 class RunLogger:
     def __init__(self, run_id):
         self.run_id = run_id
-        os.makedirs("logs", exist_ok=True)
-        self.log_file = open(f"logs/{self.run_id}_steps.csv", "w", newline="")
+        os.makedirs("/home/hannah/PycharmProjects/dissertation/results/logs", exist_ok=True)
+        self.log_file = open(f"/home/hannah/PycharmProjects/dissertation/results/logs/{self.run_id}_steps.csv", "w", newline="")
         self.logger = csv.writer(self.log_file)
-        self.logger.writerow(["timestep", "action", "vote", "belief_breakfast", "belief_lunch", "belief_drink"])
+        self.logger.writerow(["timestep", "vote", "belief_breakfast", "belief_lunch", "belief_drink"])
         self.log_file.flush()
 
-    def log_step(self, timestep, action, guess, belief):
+        self.llm_log_file = open(f"/home/hannah/PycharmProjects/dissertation/results/logs/{self.run_id}_llm_outputs.txt", "w")
+
+    def log_step(self, timestep, guess, belief):
         self.logger.writerow([
-            timestep, action, guess,
+            timestep, guess,
             round(belief["breakfast"], 3),
             round(belief["lunch"], 3),
             round(belief["drink"], 3)
         ])
         self.log_file.flush()
 
+    def log_llm_output(self, stage, timestep, prompt, raw_response):
+        self.llm_log_file.write(f"{stage} (timestep {timestep})\n")
+        self.llm_log_file.write(f"PROMPT:\n{prompt}\n")
+        self.llm_log_file.write(f"RESPONSE:\n{raw_response}\n\n")
+        self.llm_log_file.flush()
+
     def log_summary(self, goal, confidence, timestep):
-        with open("logs/summary.csv", "a", newline="") as f:
+        with open("/home/hannah/PycharmProjects/dissertation/results/logs", "a", newline="") as f:
             csv.writer(f).writerow([self.run_id, goal, confidence, timestep])
 
     def close(self):
         self.log_file.close()
+        self.llm_log_file.close()
 
 
 class RobotAgentGroundTruth(Agent):
@@ -441,7 +451,7 @@ class RobotAgentGroundTruth(Agent):
 
         self.min_actions_for_goal_reasoning = 5
         self.action_history = []
-        self.action_window = 5   # only feed the last 5 actions into stage 2, not the whole accumulated list
+        self.action_window = 5  # only feed the last 5 actions into stage 2, not the whole accumulated list
 
         self.run_id = f"run_{int(time.time())}"
         self.run_logger = RunLogger(self.run_id)
@@ -455,33 +465,39 @@ class RobotAgentGroundTruth(Agent):
         while self.step():
             step_count += 1
 
-            if step_count % 100 == 0 and not goal_locked: # fine tune for more/fewer movements caught
+            if step_count % 100 == 0 and not goal_locked:  # fine tune for more/fewer movements caught
                 observations = self.qsr.perceive_ground_truth(self.all_nodes, self.supervisor, debug=True)
                 if observations:
                     relations = observations.get("relations")
                     if relations:
                         object_evidence_strengths = self.qsr.compute_evidence_strength(relations)
-                        action = self.llm.interpret_action(relations, object_evidence_strengths, self.qsr)
+                        action = self.llm.interpret_action(relations, object_evidence_strengths, self.qsr,
+                                                           self.run_logger, self.qsr.timestep_counter)
                         if action is not None:
                             self.action_history.append(action)
                             if len(self.action_history) > self.action_window:
                                 self.action_history.pop(0)
                             if len(self.action_history) >= self.min_actions_for_goal_reasoning:
-                                guess = self.llm.generate_hypothesis(self.action_history, debug=True)
+                                guess = self.llm.generate_hypothesis(self.action_history, self.run_logger,
+                                                                     self.qsr.timestep_counter, debug=True)
                                 if guess is not None:
                                     self.gate.goal_guess_history.append(guess)
-                                    if len(self.gate.goal_guess_history) >= self.gate.min_guesses_for_likelihood: # dont trust a 1 guess frequency
-                                        likelihoods = self.gate.compute_likelihoods_from_guesses() # likelihood
+
+                                    if len(self.gate.goal_guess_history) >= self.gate.min_guesses_for_likelihood:  # dont trust a 1 guess frequency
+                                        likelihoods = self.gate.compute_likelihoods_from_guesses()  # likelihood
                                         result = self.gate.update_belief(likelihoods, debug=True)
+                                    else:
+                                        result = None
 
-                                        self.run_logger.log_step(self.qsr.timestep_counter, action, guess, self.gate.belief)
+                                    self.run_logger.log_step(self.qsr.timestep_counter, guess,
+                                                             self.gate.belief)  # now results every guess, always
 
-                                        if result:
-                                            goal, confidence = result
-                                            print(f"Suggested goal: {goal} (confidence={confidence:.2f}) ")
-                                            goal_locked = True # maybe don't lock when only one goal is certain?
-                                            self.run_logger.log_summary(goal, confidence, self.qsr.timestep_counter)
-                                            # TODO once goal locked using past observations create action plan?
+                                    if result:
+                                        goal, confidence = result
+                                        print(f"Suggested goal: {goal} (confidence={confidence:.2f}) ")
+                                        goal_locked = True  # maybe don't lock when only one goal is certain?
+                                        self.run_logger.log_summary(goal, confidence, self.qsr.timestep_counter)
+                                        # TODO once goal locked using past observations create action plan?
 
         self.run_logger.close()
 

@@ -1,0 +1,1077 @@
+ STAGE 1 (timestep 2)
+PROMPT:
+You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning, and do not
+infer where the person is going or what they intend to do, only describe
+what is directly observed right now.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Transporting the bottle to the glass.
+
+Example 2:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 3:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Example 4:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 5:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 6:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+
+Now here is the real situation.
+
+Observation: The human is far from the meal, approaching it. (evidence strength: 0.4) Meal is a type of when people eat. The human is far from the biscuits, approaching it. (evidence strength: 0.4) The human is far from the hobs, approaching it. (evidence strength: 0.4) The human is near the plate, approaching it. (evidence strength: 0.6000000000000001) Plate is a type of dish. The human is a medium distance from the sink, approaching it. (evidence strength: 0.4) The human is far from the glass, approaching it. (evidence strength: 0.4) Glass is a type of amorphous solid. The human is a medium distance from the bottle, moving away from it. (evidence strength: 0.2) Bottle is a type of container.
+
+Action:
+RESPONSE:
+Approaching the plate.
+
+STAGE 1 (timestep 3)
+PROMPT:
+You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning, and do not
+infer where the person is going or what they intend to do, only describe
+what is directly observed right now.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Transporting the bottle to the glass.
+
+Example 2:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 3:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Example 4:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 5:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 6:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+
+Now here is the real situation.
+
+Observation: The human is far from the meal, approaching it. (evidence strength: 0.4) Meal is a type of when people eat. The human is far from the biscuits, approaching it. (evidence strength: 0.4) The human is far from the hobs, approaching it. (evidence strength: 0.4) The human is near the plate, approaching it. (evidence strength: 0.6000000000000001) Plate is a type of dish. The human is a medium distance from the sink, approaching it. (evidence strength: 0.4) The human is a medium distance from the glass, approaching it. (evidence strength: 0.4) Glass is a type of amorphous solid. The human is a medium distance from the bottle, moving away from it. (evidence strength: 0.2) Bottle is a type of container.
+
+Action:
+RESPONSE:
+Approaching the plate.
+
+STAGE 1 (timestep 4)
+PROMPT:
+You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning, and do not
+infer where the person is going or what they intend to do, only describe
+what is directly observed right now.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Transporting the bottle to the glass.
+
+Example 2:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 3:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Example 4:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 5:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 6:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+
+Now here is the real situation.
+
+Observation: The human is a medium distance from the meal, approaching it. (evidence strength: 0.4) Meal is a type of when people eat. The human is a medium distance from the biscuits, approaching it. (evidence strength: 0.4) The human is far from the hobs, approaching it. (evidence strength: 0.4) The human is near the plate, approaching it. (evidence strength: 0.6000000000000001) Plate is a type of dish. The human is near the sink, approaching it. (evidence strength: 0.6000000000000001) The human is a medium distance from the glass, approaching it. (evidence strength: 0.4) Glass is a type of amorphous solid. The human is far from the bottle, moving away from it. (evidence strength: 0.2) Bottle is a type of container.
+
+Action:
+RESPONSE:
+Approaching the plate.
+
+STAGE 1 (timestep 5)
+PROMPT:
+You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning, and do not
+infer where the person is going or what they intend to do, only describe
+what is directly observed right now.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Transporting the bottle to the glass.
+
+Example 2:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 3:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Example 4:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 5:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 6:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+
+Now here is the real situation.
+
+Observation: The human is a medium distance from the meal, approaching it. (evidence strength: 0.4) Meal is a type of when people eat. The human is a medium distance from the biscuits, approaching it. (evidence strength: 0.4) The human is a medium distance from the hobs, approaching it. (evidence strength: 0.4) The human is near the plate, approaching it. (evidence strength: 0.6000000000000001) Plate is a type of dish. The human is near the sink, stationary relative to it. (evidence strength: 0.4) The human is near the glass, approaching it. (evidence strength: 0.6000000000000001) Glass is a type of amorphous solid. The human is far from the bottle, moving away from it. (evidence strength: 0.2) Bottle is a type of container.
+
+Action:
+RESPONSE:
+Approaching the plate and the glass.
+
+STAGE 1 (timestep 6)
+PROMPT:
+You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning, and do not
+infer where the person is going or what they intend to do, only describe
+what is directly observed right now.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Transporting the bottle to the glass.
+
+Example 2:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 3:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Example 4:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 5:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 6:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+
+Now here is the real situation.
+
+Observation: The human is near the meal, approaching it. (evidence strength: 0.6000000000000001) Meal is a type of when people eat. The human is near the biscuits, approaching it. (evidence strength: 0.6000000000000001) The human is a medium distance from the hobs, approaching it. (evidence strength: 0.4) The human is near the plate, moving away from it. (evidence strength: 0.4) Plate is a type of dish. The human is a medium distance from the sink, moving away from it. (evidence strength: 0.2) The human is near the glass, approaching it. (evidence strength: 0.6000000000000001) Glass is a type of amorphous solid. The human is far from the bottle, moving away from it. (evidence strength: 0.2) Bottle is a type of container.
+
+Action:
+RESPONSE:
+Approaching the meal and the glass.
+
+STAGE 2 (timestep 6)
+PROMPT:
+You are one vote in a Bayesian intention-recognition system. Your
+        final answer is combined with several other votes over time to build
+        confidence in a goal, you should only vote for breakfast, lunch, or drink when the evidence genuinely
+        discriminates between them, being unsure is okay.
+
+        For each example, briefly reason about what the recent actions suggest,
+        then give your final answer as "Answer:" followed by exactly one word: breakfast, lunch, drink,
+        or "unsure". DO NOT WRITE ANYTHING AFTER GIVING YOUR FINAL ANSWER.
+
+        Example 1:
+        Actions:
+        - The person is holding the bottle and moving toward the glass.
+        - The person is holding the glass, stationary near the sink.
+        Reasoning: Bottle and glass together, near the sink, points clearly toward getting a drink.
+        Answer: drink
+
+        Example 2:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is holding the plate while standing at the hobs.
+        Reasoning: Meal and plate both being used at the hobs suggests cooking a meal, which fits lunch.
+        Answer: lunch
+
+        Example 3:
+        Actions:
+        - The person is holding the biscuits and moving away from the sink.
+        - The person is holding the meal and moving toward the plate.
+        Reasoning: Biscuits alongside a meal being moved toward a plate suggests a light meal like breakfast.
+        Answer: breakfast
+
+        Example 4:
+        Actions:
+        - The person is not holding anything and is approaching the plate.
+        - The person is not holding anything and is approaching the glass.
+        Reasoning: Approaching two different unrelated objects without holding anything doesn't clearly favor one goal.
+        Answer: unsure
+
+        Example 5:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is touching the hobs while holding the meal.
+        Reasoning: Repeated meal-at-hobs actions reinforce that lunch preparation is underway.
+        Answer: lunch
+
+        Example 6:
+        Actions:
+        - The person is not holding anything and is not moving toward any object.
+        - The person is not holding anything and is approaching the biscuits.
+        Reasoning: Only just approaching the biscuits without holding anything yet is too early to commit to a goal.
+        Answer: unsure
+
+
+        Now here is the real situation.
+
+        Here are the latest 5 observed actions, oldest first
+        - Approaching the plate.
+- Approaching the plate.
+- Approaching the plate.
+- Approaching the plate and the glass.
+- Approaching the meal and the glass.
+
+        Reasoning:
+RESPONSE:
+the person has been consistently approaching the plate in the past three actions, which suggests a focus on eating. however, the last two actions show an interest in both the plate (meal) and the glass, indicating that the goal may be shifting towards getting a drink as well. given this mixed evidence, i'm unsure about what the person's intention is.
+
+answer: unsure
+
+STAGE 1 (timestep 7)
+PROMPT:
+You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning, and do not
+infer where the person is going or what they intend to do, only describe
+what is directly observed right now.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Transporting the bottle to the glass.
+
+Example 2:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 3:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Example 4:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 5:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 6:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+
+Now here is the real situation.
+
+Observation: The human is near the meal, approaching it. (evidence strength: 0.6000000000000001) Meal is a type of when people eat. The human is near the biscuits, approaching it. (evidence strength: 0.6000000000000001) The human is near the hobs, approaching it. (evidence strength: 0.6000000000000001) The human is near the plate, moving away from it. (evidence strength: 0.4) Plate is a type of dish. The human is a medium distance from the sink, moving away from it. (evidence strength: 0.2) The human is near the glass, approaching it. (evidence strength: 0.6000000000000001) Glass is a type of amorphous solid. The human is far from the bottle, moving away from it. (evidence strength: 0.2) Bottle is a type of container.
+
+Action:
+RESPONSE:
+Approaching the meal and the biscuits.
+
+STAGE 2 (timestep 7)
+PROMPT:
+You are one vote in a Bayesian intention-recognition system. Your
+        final answer is combined with several other votes over time to build
+        confidence in a goal, you should only vote for breakfast, lunch, or drink when the evidence genuinely
+        discriminates between them, being unsure is okay.
+
+        For each example, briefly reason about what the recent actions suggest,
+        then give your final answer as "Answer:" followed by exactly one word: breakfast, lunch, drink,
+        or "unsure". DO NOT WRITE ANYTHING AFTER GIVING YOUR FINAL ANSWER.
+
+        Example 1:
+        Actions:
+        - The person is holding the bottle and moving toward the glass.
+        - The person is holding the glass, stationary near the sink.
+        Reasoning: Bottle and glass together, near the sink, points clearly toward getting a drink.
+        Answer: drink
+
+        Example 2:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is holding the plate while standing at the hobs.
+        Reasoning: Meal and plate both being used at the hobs suggests cooking a meal, which fits lunch.
+        Answer: lunch
+
+        Example 3:
+        Actions:
+        - The person is holding the biscuits and moving away from the sink.
+        - The person is holding the meal and moving toward the plate.
+        Reasoning: Biscuits alongside a meal being moved toward a plate suggests a light meal like breakfast.
+        Answer: breakfast
+
+        Example 4:
+        Actions:
+        - The person is not holding anything and is approaching the plate.
+        - The person is not holding anything and is approaching the glass.
+        Reasoning: Approaching two different unrelated objects without holding anything doesn't clearly favor one goal.
+        Answer: unsure
+
+        Example 5:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is touching the hobs while holding the meal.
+        Reasoning: Repeated meal-at-hobs actions reinforce that lunch preparation is underway.
+        Answer: lunch
+
+        Example 6:
+        Actions:
+        - The person is not holding anything and is not moving toward any object.
+        - The person is not holding anything and is approaching the biscuits.
+        Reasoning: Only just approaching the biscuits without holding anything yet is too early to commit to a goal.
+        Answer: unsure
+
+
+        Now here is the real situation.
+
+        Here are the latest 5 observed actions, oldest first
+        - Approaching the plate.
+- Approaching the plate.
+- Approaching the plate and the glass.
+- Approaching the meal and the glass.
+- Approaching the meal and the biscuits.
+
+        Reasoning:
+RESPONSE:
+the person is repeatedly approaching the plate, which suggests a goal of eating. the fact that they are also approaching other objects like the glass and meal doesn't clearly favor one goal over another, as it could be related to getting a drink or cooking lunch. however, the repeated approach towards the plate without any clear indication of holding food or utensils makes me lean towards a goal of eating.
+
+answer: breakfast
+
+STAGE 1 (timestep 8)
+PROMPT:
+You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning, and do not
+infer where the person is going or what they intend to do, only describe
+what is directly observed right now.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Transporting the bottle to the glass.
+
+Example 2:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 3:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Example 4:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 5:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 6:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+
+Now here is the real situation.
+
+Observation: The human is near the meal, approaching it. (evidence strength: 0.6000000000000001) Meal is a type of when people eat. The human is near the biscuits, approaching it. (evidence strength: 0.6000000000000001) The human is near the hobs, approaching it. (evidence strength: 0.6000000000000001) The human is near the plate, moving away from it. (evidence strength: 0.4) Plate is a type of dish. The human is a medium distance from the sink, moving away from it. (evidence strength: 0.2) The human is near the glass, moving away from it. (evidence strength: 0.4) Glass is a type of amorphous solid. The human is far from the bottle, moving away from it. (evidence strength: 0.2) Bottle is a type of container.
+
+Action:
+RESPONSE:
+Approaching the meal and the biscuits.
+
+STAGE 2 (timestep 8)
+PROMPT:
+You are one vote in a Bayesian intention-recognition system. Your
+        final answer is combined with several other votes over time to build
+        confidence in a goal, you should only vote for breakfast, lunch, or drink when the evidence genuinely
+        discriminates between them, being unsure is okay.
+
+        For each example, briefly reason about what the recent actions suggest,
+        then give your final answer as "Answer:" followed by exactly one word: breakfast, lunch, drink,
+        or "unsure". DO NOT WRITE ANYTHING AFTER GIVING YOUR FINAL ANSWER.
+
+        Example 1:
+        Actions:
+        - The person is holding the bottle and moving toward the glass.
+        - The person is holding the glass, stationary near the sink.
+        Reasoning: Bottle and glass together, near the sink, points clearly toward getting a drink.
+        Answer: drink
+
+        Example 2:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is holding the plate while standing at the hobs.
+        Reasoning: Meal and plate both being used at the hobs suggests cooking a meal, which fits lunch.
+        Answer: lunch
+
+        Example 3:
+        Actions:
+        - The person is holding the biscuits and moving away from the sink.
+        - The person is holding the meal and moving toward the plate.
+        Reasoning: Biscuits alongside a meal being moved toward a plate suggests a light meal like breakfast.
+        Answer: breakfast
+
+        Example 4:
+        Actions:
+        - The person is not holding anything and is approaching the plate.
+        - The person is not holding anything and is approaching the glass.
+        Reasoning: Approaching two different unrelated objects without holding anything doesn't clearly favor one goal.
+        Answer: unsure
+
+        Example 5:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is touching the hobs while holding the meal.
+        Reasoning: Repeated meal-at-hobs actions reinforce that lunch preparation is underway.
+        Answer: lunch
+
+        Example 6:
+        Actions:
+        - The person is not holding anything and is not moving toward any object.
+        - The person is not holding anything and is approaching the biscuits.
+        Reasoning: Only just approaching the biscuits without holding anything yet is too early to commit to a goal.
+        Answer: unsure
+
+
+        Now here is the real situation.
+
+        Here are the latest 5 observed actions, oldest first
+        - Approaching the plate.
+- Approaching the plate and the glass.
+- Approaching the meal and the glass.
+- Approaching the meal and the biscuits.
+- Approaching the meal and the biscuits.
+
+        Reasoning:
+RESPONSE:
+the person is approaching multiple objects in a sequence, starting with the plate, then adding the glass, then the meal, and finally the biscuits. this suggests that they are preparing for a meal, but it's unclear whether it's breakfast or lunch yet. the fact that the biscuits were added last might suggest a light meal like breakfast.
+
+answer: unsure
+
+STAGE 1 (timestep 9)
+PROMPT:
+You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning, and do not
+infer where the person is going or what they intend to do, only describe
+what is directly observed right now.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Transporting the bottle to the glass.
+
+Example 2:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 3:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Example 4:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 5:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 6:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+
+Now here is the real situation.
+
+Observation: The human is near the meal, moving away from it. (evidence strength: 0.4) Meal is a type of when people eat. The human is touching the biscuits, approaching it, and is currently HOLDING it. (evidence strength: 1.0) The human is near the hobs, approaching it. (evidence strength: 0.6000000000000001) The human is near the plate, moving away from it. (evidence strength: 0.4) Plate is a type of dish. The human is a medium distance from the sink, stationary relative to it. (evidence strength: 0.2) The human is near the glass, approaching it. (evidence strength: 0.6000000000000001) Glass is a type of amorphous solid. The human is far from the bottle, moving away from it. (evidence strength: 0.2) Bottle is a type of container.
+
+Action:
+RESPONSE:
+Picking up the biscuits and approaching the hobs.
+
+STAGE 2 (timestep 9)
+PROMPT:
+You are one vote in a Bayesian intention-recognition system. Your
+        final answer is combined with several other votes over time to build
+        confidence in a goal, you should only vote for breakfast, lunch, or drink when the evidence genuinely
+        discriminates between them, being unsure is okay.
+
+        For each example, briefly reason about what the recent actions suggest,
+        then give your final answer as "Answer:" followed by exactly one word: breakfast, lunch, drink,
+        or "unsure". DO NOT WRITE ANYTHING AFTER GIVING YOUR FINAL ANSWER.
+
+        Example 1:
+        Actions:
+        - The person is holding the bottle and moving toward the glass.
+        - The person is holding the glass, stationary near the sink.
+        Reasoning: Bottle and glass together, near the sink, points clearly toward getting a drink.
+        Answer: drink
+
+        Example 2:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is holding the plate while standing at the hobs.
+        Reasoning: Meal and plate both being used at the hobs suggests cooking a meal, which fits lunch.
+        Answer: lunch
+
+        Example 3:
+        Actions:
+        - The person is holding the biscuits and moving away from the sink.
+        - The person is holding the meal and moving toward the plate.
+        Reasoning: Biscuits alongside a meal being moved toward a plate suggests a light meal like breakfast.
+        Answer: breakfast
+
+        Example 4:
+        Actions:
+        - The person is not holding anything and is approaching the plate.
+        - The person is not holding anything and is approaching the glass.
+        Reasoning: Approaching two different unrelated objects without holding anything doesn't clearly favor one goal.
+        Answer: unsure
+
+        Example 5:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is touching the hobs while holding the meal.
+        Reasoning: Repeated meal-at-hobs actions reinforce that lunch preparation is underway.
+        Answer: lunch
+
+        Example 6:
+        Actions:
+        - The person is not holding anything and is not moving toward any object.
+        - The person is not holding anything and is approaching the biscuits.
+        Reasoning: Only just approaching the biscuits without holding anything yet is too early to commit to a goal.
+        Answer: unsure
+
+
+        Now here is the real situation.
+
+        Here are the latest 5 observed actions, oldest first
+        - Approaching the plate and the glass.
+- Approaching the meal and the glass.
+- Approaching the meal and the biscuits.
+- Approaching the meal and the biscuits.
+- Picking up the biscuits and approaching the hobs.
+
+        Reasoning:
+RESPONSE:
+the person is initially approaching multiple objects, which doesn't clearly favor one goal. however, as they pick up the biscuits and approach the hobs, it suggests that a light meal like breakfast is being prepared.
+
+answer: breakfast
+
+STAGE 1 (timestep 10)
+PROMPT:
+You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning, and do not
+infer where the person is going or what they intend to do, only describe
+what is directly observed right now.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Transporting the bottle to the glass.
+
+Example 2:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 3:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Example 4:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 5:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 6:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+
+Now here is the real situation.
+
+Observation: The human is near the meal, stationary relative to it. (evidence strength: 0.4) Meal is a type of when people eat. The human is touching the biscuits, stationary relative to it, and is currently HOLDING it. (evidence strength: 0.8) The human is near the hobs, stationary relative to it. (evidence strength: 0.4) The human is near the plate, stationary relative to it. (evidence strength: 0.4) Plate is a type of dish. The human is a medium distance from the sink, stationary relative to it. (evidence strength: 0.2) The human is near the glass, stationary relative to it. (evidence strength: 0.4) Glass is a type of amorphous solid. The human is far from the bottle, stationary relative to it. (evidence strength: 0.2) Bottle is a type of container.
+
+Action:
+RESPONSE:
+Picking up the biscuits.
+
+STAGE 2 (timestep 10)
+PROMPT:
+You are one vote in a Bayesian intention-recognition system. Your
+        final answer is combined with several other votes over time to build
+        confidence in a goal, you should only vote for breakfast, lunch, or drink when the evidence genuinely
+        discriminates between them, being unsure is okay.
+
+        For each example, briefly reason about what the recent actions suggest,
+        then give your final answer as "Answer:" followed by exactly one word: breakfast, lunch, drink,
+        or "unsure". DO NOT WRITE ANYTHING AFTER GIVING YOUR FINAL ANSWER.
+
+        Example 1:
+        Actions:
+        - The person is holding the bottle and moving toward the glass.
+        - The person is holding the glass, stationary near the sink.
+        Reasoning: Bottle and glass together, near the sink, points clearly toward getting a drink.
+        Answer: drink
+
+        Example 2:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is holding the plate while standing at the hobs.
+        Reasoning: Meal and plate both being used at the hobs suggests cooking a meal, which fits lunch.
+        Answer: lunch
+
+        Example 3:
+        Actions:
+        - The person is holding the biscuits and moving away from the sink.
+        - The person is holding the meal and moving toward the plate.
+        Reasoning: Biscuits alongside a meal being moved toward a plate suggests a light meal like breakfast.
+        Answer: breakfast
+
+        Example 4:
+        Actions:
+        - The person is not holding anything and is approaching the plate.
+        - The person is not holding anything and is approaching the glass.
+        Reasoning: Approaching two different unrelated objects without holding anything doesn't clearly favor one goal.
+        Answer: unsure
+
+        Example 5:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is touching the hobs while holding the meal.
+        Reasoning: Repeated meal-at-hobs actions reinforce that lunch preparation is underway.
+        Answer: lunch
+
+        Example 6:
+        Actions:
+        - The person is not holding anything and is not moving toward any object.
+        - The person is not holding anything and is approaching the biscuits.
+        Reasoning: Only just approaching the biscuits without holding anything yet is too early to commit to a goal.
+        Answer: unsure
+
+
+        Now here is the real situation.
+
+        Here are the latest 5 observed actions, oldest first
+        - Approaching the meal and the glass.
+- Approaching the meal and the biscuits.
+- Approaching the meal and the biscuits.
+- Picking up the biscuits and approaching the hobs.
+- Picking up the biscuits.
+
+        Reasoning:
+RESPONSE:
+the person is initially approaching both the meal and the glass, which could suggest getting a drink or eating breakfast. however, subsequent actions show that they are repeatedly approaching the meal and biscuits together, which suggests preparing a light meal like breakfast. the final action of picking up the biscuits and moving toward the hobs reinforces this idea.
+
+answer: breakfast
+
+STAGE 1 (timestep 11)
+PROMPT:
+You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning, and do not
+infer where the person is going or what they intend to do, only describe
+what is directly observed right now.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Transporting the bottle to the glass.
+
+Example 2:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 3:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Example 4:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 5:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 6:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+
+Now here is the real situation.
+
+Observation: The human is near the meal, moving away from it. (evidence strength: 0.4) Meal is a type of when people eat. The human is touching the biscuits, moving away from it, and is currently HOLDING it. (evidence strength: 0.8) The human is near the hobs, moving away from it. (evidence strength: 0.4) The human is near the plate, approaching it. (evidence strength: 0.6000000000000001) Plate is a type of dish. The human is a medium distance from the sink, approaching it. (evidence strength: 0.4) The human is near the glass, approaching it. (evidence strength: 0.6000000000000001) Glass is a type of amorphous solid. The human is far from the bottle, approaching it. (evidence strength: 0.4) Bottle is a type of container.
+
+Action:
+RESPONSE:
+Picking up the biscuits and moving away from the meal.
+
+STAGE 2 (timestep 11)
+PROMPT:
+You are one vote in a Bayesian intention-recognition system. Your
+        final answer is combined with several other votes over time to build
+        confidence in a goal, you should only vote for breakfast, lunch, or drink when the evidence genuinely
+        discriminates between them, being unsure is okay.
+
+        For each example, briefly reason about what the recent actions suggest,
+        then give your final answer as "Answer:" followed by exactly one word: breakfast, lunch, drink,
+        or "unsure". DO NOT WRITE ANYTHING AFTER GIVING YOUR FINAL ANSWER.
+
+        Example 1:
+        Actions:
+        - The person is holding the bottle and moving toward the glass.
+        - The person is holding the glass, stationary near the sink.
+        Reasoning: Bottle and glass together, near the sink, points clearly toward getting a drink.
+        Answer: drink
+
+        Example 2:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is holding the plate while standing at the hobs.
+        Reasoning: Meal and plate both being used at the hobs suggests cooking a meal, which fits lunch.
+        Answer: lunch
+
+        Example 3:
+        Actions:
+        - The person is holding the biscuits and moving away from the sink.
+        - The person is holding the meal and moving toward the plate.
+        Reasoning: Biscuits alongside a meal being moved toward a plate suggests a light meal like breakfast.
+        Answer: breakfast
+
+        Example 4:
+        Actions:
+        - The person is not holding anything and is approaching the plate.
+        - The person is not holding anything and is approaching the glass.
+        Reasoning: Approaching two different unrelated objects without holding anything doesn't clearly favor one goal.
+        Answer: unsure
+
+        Example 5:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is touching the hobs while holding the meal.
+        Reasoning: Repeated meal-at-hobs actions reinforce that lunch preparation is underway.
+        Answer: lunch
+
+        Example 6:
+        Actions:
+        - The person is not holding anything and is not moving toward any object.
+        - The person is not holding anything and is approaching the biscuits.
+        Reasoning: Only just approaching the biscuits without holding anything yet is too early to commit to a goal.
+        Answer: unsure
+
+
+        Now here is the real situation.
+
+        Here are the latest 5 observed actions, oldest first
+        - Approaching the meal and the biscuits.
+- Approaching the meal and the biscuits.
+- Picking up the biscuits and approaching the hobs.
+- Picking up the biscuits.
+- Picking up the biscuits and moving away from the meal.
+
+        Reasoning:
+RESPONSE:
+the person is initially approaching both the meal and the biscuits, which could suggest either breakfast or lunch. however, subsequent actions show that they are picking up the biscuits and moving them toward the hobs, where cooking typically occurs for meals like lunch. this suggests a shift in intention towards preparing a meal.
+
+answer: lunch
+
+STAGE 1 (timestep 12)
+PROMPT:
+You are the perception stage in a multi-stage intention-recognition
+pipeline. Errors here become facts to a later reasoning stage, so accuracy
+matters more than completeness. Do not explain your reasoning, and do not
+infer where the person is going or what they intend to do, only describe
+what is directly observed right now.
+
+In one short discrete phrase (like "taking the bottle to the glass" or
+"using the plate at the hobs"), describe the action the person is
+performing. Never invent a holding status that isn't explicitly stated
+in the observation.
+
+Example 1:
+Observation: The human is touching the bottle, approaching it, and is
+currently HOLDING it. The human is near the glass, approaching it.
+Action: Transporting the bottle to the glass.
+
+Example 2:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 3:
+Observation: The human is far from the meal, stationary relative to it.
+The human is far from the hobs, stationary relative to it.
+Action: Not interacting with anything nearby.
+
+Example 4:
+Observation: The human is touching the plate, approaching it, and is
+currently HOLDING it. The human is touching the hobs, stationary
+relative to it.
+Action: Using the plate at the hobs.
+
+Example 5:
+Observation: The human is near the plate, approaching it. The human is
+far from the glass, stationary relative to it.
+Action: Approaching the plate.
+
+Example 6:
+Observation: The human is touching the biscuits, stationary relative to
+it, and is currently HOLDING it. The human is far from the sink, moving
+away from it.
+Action: Picking up the biscuits and moving away from the sink.
+
+
+Now here is the real situation.
+
+Observation: The human is near the meal, moving away from it. (evidence strength: 0.4) Meal is a type of when people eat. The human is touching the biscuits, approaching it, and is currently HOLDING it. (evidence strength: 1.0) The human is a medium distance from the hobs, moving away from it. (evidence strength: 0.2) The human is near the plate, approaching it. (evidence strength: 0.6000000000000001) Plate is a type of dish. The human is a medium distance from the sink, approaching it. (evidence strength: 0.4) The human is near the glass, approaching it. (evidence strength: 0.6000000000000001) Glass is a type of amorphous solid. The human is far from the bottle, approaching it. (evidence strength: 0.4) Bottle is a type of container.
+
+Action:
+RESPONSE:
+Picking up the biscuits and moving away from the meal.
+
+STAGE 2 (timestep 12)
+PROMPT:
+You are one vote in a Bayesian intention-recognition system. Your
+        final answer is combined with several other votes over time to build
+        confidence in a goal, you should only vote for breakfast, lunch, or drink when the evidence genuinely
+        discriminates between them, being unsure is okay.
+
+        For each example, briefly reason about what the recent actions suggest,
+        then give your final answer as "Answer:" followed by exactly one word: breakfast, lunch, drink,
+        or "unsure". DO NOT WRITE ANYTHING AFTER GIVING YOUR FINAL ANSWER.
+
+        Example 1:
+        Actions:
+        - The person is holding the bottle and moving toward the glass.
+        - The person is holding the glass, stationary near the sink.
+        Reasoning: Bottle and glass together, near the sink, points clearly toward getting a drink.
+        Answer: drink
+
+        Example 2:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is holding the plate while standing at the hobs.
+        Reasoning: Meal and plate both being used at the hobs suggests cooking a meal, which fits lunch.
+        Answer: lunch
+
+        Example 3:
+        Actions:
+        - The person is holding the biscuits and moving away from the sink.
+        - The person is holding the meal and moving toward the plate.
+        Reasoning: Biscuits alongside a meal being moved toward a plate suggests a light meal like breakfast.
+        Answer: breakfast
+
+        Example 4:
+        Actions:
+        - The person is not holding anything and is approaching the plate.
+        - The person is not holding anything and is approaching the glass.
+        Reasoning: Approaching two different unrelated objects without holding anything doesn't clearly favor one goal.
+        Answer: unsure
+
+        Example 5:
+        Actions:
+        - The person is holding the meal and moving toward the hobs.
+        - The person is touching the hobs while holding the meal.
+        Reasoning: Repeated meal-at-hobs actions reinforce that lunch preparation is underway.
+        Answer: lunch
+
+        Example 6:
+        Actions:
+        - The person is not holding anything and is not moving toward any object.
+        - The person is not holding anything and is approaching the biscuits.
+        Reasoning: Only just approaching the biscuits without holding anything yet is too early to commit to a goal.
+        Answer: unsure
+
+
+        Now here is the real situation.
+
+        Here are the latest 5 observed actions, oldest first
+        - Approaching the meal and the biscuits.
+- Picking up the biscuits and approaching the hobs.
+- Picking up the biscuits.
+- Picking up the biscuits and moving away from the meal.
+- Picking up the biscuits and moving away from the meal.
+
+        Reasoning:
+RESPONSE:
+the person is initially approaching both a meal and biscuits, which could suggest either breakfast or lunch. however, subsequent actions show that they are picking up the biscuits and moving them toward the hobs, where cooking typically occurs for meals like lunch. this suggests that the goal is more likely to be preparing a meal, specifically lunch.
+
+answer: lunch
+

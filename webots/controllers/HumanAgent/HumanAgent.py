@@ -9,6 +9,7 @@ HAND_LENGTH = 0.10       # m (estimate)
 
 import sys
 import os
+import random
 
 # Add the project root directory to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
@@ -725,11 +726,12 @@ class HumanAgent(Agent):
 
 def main():
     human = HumanAgent()
+    human.speed = random.uniform(0.3, 0.7) # random speed
     while human.step():
         human.busy_waiting(1, label="STILL")    # Intro
         #human.breakfast(with_collab=True)
-        human.lunch(with_collab=True)
-        #human.drink(with_collab=True)
+        #human.lunch(with_collab=True)
+        human.drink(with_collab=True)
         human.busy_waiting(1, label="STILL")   # Outro #Originally was -1
         break
     print("HumanAgent: Simulation ended.")
