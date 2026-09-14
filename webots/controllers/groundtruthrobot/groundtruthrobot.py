@@ -270,7 +270,7 @@ Action:"""
     def generate_hypothesis(self, action_history, run_logger, timestep, debug=True):
         # no longer asks for JSON likelihoods, asks for a single vote
         # llm own likelihood value not grounded anything
-        # coll;ect likelihood from banked votes
+        # collect likelihood from banked votes
         history_text = "\n".join(f"- {a}" for a in action_history)
 
         prompt = f"""You are one vote in a Bayesian intention-recognition system. Your
